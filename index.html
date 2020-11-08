@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Убийца орков</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/vue@next" defer></script>
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Убийца орков</h1>
+  </header>
+  <div id="game" class="container">
+    <div class="row">
+      <section id="monster" class="col">
+        <h2>Орк</h2>
+        <img src="images/orc.jpg" />
+        <div class="healthbar">
+          <div class="healthbar__value" :style="monsterBarStyles"></div>
+        </div>
+      </section>
+      <section id="player" class="col">
+        <h2>Рыцарь</h2>
+        <img src="images/knight.jpg" />
+        <div class="healthbar">
+          <div class="healthbar__value" :style="playerBarStyles"></div>
+        </div>
+      </section>
+    </div>
+    <section id="player" class="container" v-if="winner">
+      <h2>Игра окончена</h2>
+      <h3 v-if="winner === 'player'">Ты выиграл!</h3>
+      <h3 v-else-if="winner === 'monster'">Ты проиграл!</h3>
+      <h3 v-else-if="winner === 'draw'">Ничья</h3>
+      <button @click="startGame">Начать заново</button>
+    </section>
+    <section id="controls" v-if="!winner">
+      <button @click="attackMonster">Ударить</button>
+      <button :disabled="mayUseSpecialAttack" @click="specialAttackMonster">Спецатака</button>
+      <button @click="healPlayer">Лечение</button>
+      <button @click="surrender">Сдаться</button>
+    </section>
+    <section id="log">
+      <h2>Боевой журнал</h2>
+      <ul>
+        <li v-for="logMessage in logMessages">
+          <span
+            :class="{'log--player': logMessage.actionBy === 'player', 'log--monster': logMessage.actionBy === 'monster'}">{{ logMessage.actionBy === 'player' ? 'Рыцарь' : 'Орк' }}</span>
+          <span v-if="logMessage.actionType === 'heal'"> лечит себя на <span
+              class="log--heal">{{ logMessage.actionValue }}</span></span>
+          <span v-else> атакует на <span class="log--damage">{{ logMessage.actionValue }}</span></span>
+        </li>
+      </ul>
+    </section>
+  </div>
+</body>
+
+</html>
